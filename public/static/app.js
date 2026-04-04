@@ -302,16 +302,14 @@ function renderFooter(){
     <span class="credit-icon">
       <i class="fas fa-code"></i>
     </span>
-    <span class="credit-text">
-      صُنع بواسطة
-    </span>
-    <a href="mailto:mahmoudnageeb2709@gmail.com" class="credit-name">
-     MAHMOUD NAGEEB
-    </a>
-  </div>
-  <div class="credit-tagline">
-    تصميم &bull; تطوير &bull; إبداع
-  </div>
+  <span class="credit-text" style="font-size: 18px; font-weight: bold;">
+  تصميم و تطوير 
+</span>
+<a href="mailto:mahmoudnageeb2709@gmail.com" class="credit-name">
+  MAHMOUD NAGEEB
+</a>
+</div>
+
 </div>
     <div class="footer-bottom"><p>&copy; 2026 يقين | Yaqeen - ${t('rightsReserved')}</p></div>
   </div></footer>`}
