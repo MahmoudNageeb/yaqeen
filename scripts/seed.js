@@ -62,6 +62,7 @@ async function seed() {
     { name_ar: 'عطر حريمي', name_en: 'Women Perfume', icon: 'fa-spray-can-sparkles' },
     { name_ar: 'إكسسوارات', name_en: 'Accessories', icon: 'fa-gem' },
     { name_ar: 'أطفال', name_en: 'Kids', icon: 'fa-child' },
+    { name_ar: 'ملابس', name_en: 'Clothing', icon: 'fa-shirt' },
   ];
   await Category.insertMany(categories);
   console.log(`${categories.length} categories created.`);
