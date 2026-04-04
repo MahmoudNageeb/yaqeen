@@ -297,6 +297,22 @@ function renderFooter(){
         <a href="mailto:${CONTACT_EMAIL}" class="footer-email-link"><i class="fas fa-envelope"></i><span>${CONTACT_EMAIL}</span></a>
       </div>
     </div>
+  <div class="footer-credit">
+  <div class="credit-line">
+    <span class="credit-icon">
+      <i class="fas fa-code"></i>
+    </span>
+    <span class="credit-text">
+      صُنع بواسطة
+    </span>
+    <a href="mailto:mahmoudnageeb2709@gmail.com" class="credit-name">
+     MAHMOUD NAGEEB
+    </a>
+  </div>
+  <div class="credit-tagline">
+    تصميم &bull; تطوير &bull; إبداع
+  </div>
+</div>
     <div class="footer-bottom"><p>&copy; 2026 يقين | Yaqeen - ${t('rightsReserved')}</p></div>
   </div></footer>`}
 
