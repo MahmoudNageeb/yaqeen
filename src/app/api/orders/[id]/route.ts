@@ -54,6 +54,50 @@ async function _PUT(req: Request, { params }: { params: { id: string } }) {
     }
   }
   
+  // Handle add item to order
+  if (b.action === 'add_item') {
+    const product = await Product.findById(b.product_id)
+    if (!product) return NextResponse.json({ error: 'Product not found' }, { status: 404 })
+    const qty = b.quantity || 1
+    const newItem = {
+      product_id: product._id,
+      quantity: qty,
+      price: product.price,
+      selected_size: b.selected_size || '',
+      selected_color: b.selected_color || '',
+      title_ar: product.title_ar,
+      title_en: product.title_en,
+      product_img: product.product_img,
+    }
+    order.items.push(newItem)
+    order.total = order.items.reduce((s: number, it: any) => s + (it.price * it.quantity), 0)
+    if (order.status !== 'cancelled') {
+      await Product.updateOne(
+        { _id: product._id, 'variants.size': b.selected_size || '', 'variants.color_name': b.selected_color || '' },
+        { $inc: { 'variants.$.stock': -qty } }
+      )
+    }
+    await order.save()
+    return NextResponse.json({ message: 'Item added to order' })
+  }
+
+  // Handle remove item from order
+  if (b.action === 'remove_item' && b.item_index !== undefined) {
+    const idx = Number(b.item_index)
+    if (idx < 0 || idx >= order.items.length) return NextResponse.json({ error: 'Invalid item index' }, { status: 400 })
+    const removedItem = order.items[idx]
+    if (order.status !== 'cancelled') {
+      await Product.updateOne(
+        { _id: removedItem.product_id, 'variants.size': removedItem.selected_size || '', 'variants.color_name': removedItem.selected_color || '' },
+        { $inc: { 'variants.$.stock': removedItem.quantity } }
+      )
+    }
+    order.items.splice(idx, 1)
+    order.total = order.items.reduce((s: number, it: any) => s + (it.price * it.quantity), 0)
+    await order.save()
+    return NextResponse.json({ message: 'Item removed from order' })
+  }
+
   const updateData: any = {}
   if (b.full_name !== undefined) updateData.full_name = b.full_name
   if (b.phone !== undefined) updateData.phone = b.phone
