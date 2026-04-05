@@ -284,37 +284,7 @@ function renderAdminLayout(content){
 function toggleAdminSidebar(){document.getElementById('adminSidebar')?.classList.toggle('open')}
 function bindAdminEvents(){document.querySelectorAll('.admin-sidebar-link').forEach(l=>{l.addEventListener('click',()=>{if(window.innerWidth<=1024)document.getElementById('adminSidebar')?.classList.remove('open')})})}
 
-// FOOTER
-function renderFooter(){
-  return`<footer class="main-footer"><div class="footer-inner">
-    <div class="footer-main">
-      <div class="footer-brand"><img src="${LOGO}" alt="يقين"><span>يقين | Yaqeen</span></div>
-      <div class="footer-social">
-        <a href="${FB_LINK}" target="_blank" class="social-link fb" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-        <a href="${TT_LINK}" target="_blank" class="social-link tt" title="TikTok"><i class="fab fa-tiktok"></i></a>
-        <a href="https://wa.me/${WA_PHONE}" target="_blank" class="social-link wa" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-      </div>
-      <div class="footer-contact-info">
-        <a href="tel:${PHONE}" class="footer-phone"><i class="fas fa-phone"></i><span>${PHONE}</span></a>
-        <a href="mailto:${CONTACT_EMAIL}" class="footer-email-link"><i class="fas fa-envelope"></i><span>${CONTACT_EMAIL}</span></a>
-      </div>
-    </div>
-  <div class="footer-credit">
-  <div class="credit-line">
-    <span class="credit-icon">
-      <i class="fas fa-code"></i>
-    </span>
-  <span class="credit-text" style="font-size: 18px; font-weight: bold;">
-  ${t('designedBy')} 
-</span>
-<a href="mailto:mahmoudnageeb2709@gmail.com" class="credit-name">
-  MAHMOUD NAGEEB
-</a>
-</div>
 
-</div>
-    <div class="footer-bottom"><p>&copy; 2026 يقين | Yaqeen - ${t('rightsReserved')}</p></div>
-  </div></footer>`}
 
 function bindGlobalEvents(){const h=document.getElementById('mainHeader');if(h){const fn=()=>{h.classList.toggle('scrolled',window.scrollY>50)};window.removeEventListener('scroll',fn);window.addEventListener('scroll',fn);fn()}}
 function toggleMobileMenu(){document.getElementById('navLinks')?.classList.toggle('open')}
