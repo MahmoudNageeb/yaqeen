@@ -180,19 +180,6 @@ a{text-decoration:none;color:inherit}img{max-width:100%;display:block}button{cur
 [dir="rtl"] .footer-contact-info{align-items:flex-start}
 .footer-bottom{text-align:center;padding-top:1.5rem;color:var(--text-secondary);font-size:.78rem;margin-top:1rem}
 
-/* Footer Credit - Designed by MAHMOUD NAGEEB */
-.footer-credit{text-align:center;padding:1.8rem 0;margin-top:.5rem;position:relative}
-.footer-credit::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);border-radius:2px}
-.credit-line{display:flex;align-items:center;justify-content:center;gap:.5rem;font-size:.92rem;color:var(--text-secondary);flex-wrap:wrap}
-.credit-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#e8b923);color:var(--primary);font-size:.75rem;box-shadow:0 2px 8px var(--gold-glow)}
-.credit-heart{color:#e74c3c;font-size:.75rem;margin:0 1px;animation:heartbeat 1.5s ease-in-out infinite}
-.credit-text{color:var(--text-secondary);font-weight:500}
-.credit-name{font-weight:800;font-size:1rem;background:linear-gradient(135deg,var(--accent),#f0c040,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:.5px;transition:var(--transition);position:relative}
-.credit-name:hover{filter:brightness(1.3);transform:scale(1.05)}
-.credit-name::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:1.5px;background:linear-gradient(90deg,var(--accent),#f0c040);border-radius:1px;transform:scaleX(0);transition:transform .3s ease}
-.credit-name:hover::after{transform:scaleX(1)}
-.credit-tagline{font-size:.72rem;color:var(--text-secondary);opacity:.7;margin-top:.4rem;letter-spacing:2px;text-transform:uppercase;font-weight:600}
-@keyframes heartbeat{0%,100%{transform:scale(1)}14%{transform:scale(1.2)}28%{transform:scale(1)}42%{transform:scale(1.15)}56%{transform:scale(1)}}
 
 /* ==================== PRODUCT DETAILS ==================== */
 .product-details-page{padding:2rem 0}
@@ -670,8 +657,6 @@ input[type=number]{-moz-appearance:textfield}
   /* Footer */
   .footer-main{flex-direction:column;text-align:center}
   .footer-contact-info{align-items:center}
-  .credit-line{font-size:.84rem}
-  .credit-name{font-size:.92rem}
   .admin-filter-bar{padding:.6rem}
   .admin-search-box{min-width:100%;flex-basis:100%}
   .admin-filter-select{max-width:none;flex:1;min-width:0}
