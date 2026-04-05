@@ -17,7 +17,7 @@ async function _GET(req: Request) {
 
   const products = await Product.find()
 
-  const revenue = orders.reduce((s, o) => s + (o.total || 0), 0)
+  const revenue = orders.filter(o => o.status !== 'cancelled').reduce((s, o) => s + (o.total || 0), 0)
 
   const statusCounts: any = { pending: 0, processing: 0, shipped: 0, completed: 0, cancelled: 0 }
   orders.forEach(o => { if (statusCounts[o.status] !== undefined) statusCounts[o.status]++ })
@@ -25,7 +25,7 @@ async function _GET(req: Request) {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
   const todayOrders = orders.filter(o => new Date(o.createdAt) >= today)
-  const todayRevenue = todayOrders.reduce((s, o) => s + (o.total || 0), 0)
+  const todayRevenue = todayOrders.filter(o => o.status !== 'cancelled').reduce((s, o) => s + (o.total || 0), 0)
 
   // Low stock & out of stock with product details
   let lowStock = 0, outOfStock = 0
