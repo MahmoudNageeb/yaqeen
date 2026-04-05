@@ -75,6 +75,7 @@ variantStock:'مخزون المتغيرات',stockPerVariant:'المخزون ح�
 freeShipping:'شحن مجاني',fastDelivery:'توصيل سريع',fastDeliveryDesc:'توصيل خلال 2-5 أيام عمل',
 loginRequired:'يجب تسجيل الدخول أولاً',
 manageCategories:'إدارة الأقسام',
+filterByCategory:'فلتر بالقسم',filterByStatus:'فلتر بالحالة',filterByStock:'فلتر بالمخزون',searchByName:'بحث بالاسم...',searchOrders:'بحث بالاسم أو الرقم...',allStatuses:'كل الحالات',allStock:'كل المنتجات',lowStockOnly:'مخزون منخفض',outOfStockOnly:'نفدت من المخزون',inStockOnly:'متوفر فقط',sortBy:'ترتيب',sortNewest:'الأحدث',sortOldest:'الأقدم',sortPriceHigh:'السعر: الأعلى',sortPriceLow:'السعر: الأقل',sortNameAZ:'الاسم: أ-ي',priceRange:'نطاق السعر',priceFrom:'من',priceTo:'إلى',applyFilter:'تطبيق',resetFilter:'مسح',designedBy:'تصميم و تطوير',shareProduct:'مشاركة المنتج',shareVia:'مشاركة عبر',copyLink:'نسخ الرابط',linkCopied:'تم نسخ الرابط',
 coupons:'أكواد الخصم',manageCoupons:'إدارة أكواد الخصم',addCoupon:'إضافة كود خصم',editCoupon:'تعديل كود الخصم',couponCode:'كود الخصم',couponDiscount:'قيمة الخصم',couponType:'نوع الخصم',percentage:'نسبة مئوية',fixedAmount:'مبلغ ثابت',minOrder:'حد أدنى للطلب',maxUses:'الحد الأقصى للاستخدام',usedCount:'مرات الاستخدام',expiresAt:'تاريخ الانتهاء',unlimited:'غير محدود',active:'مفعل',inactive:'غير مفعل',couponAdded:'تم إضافة كود الخصم',couponUpdated:'تم تحديث كود الخصم',couponDeleted:'تم حذف كود الخصم',applyCoupon:'تطبيق الكود',couponApplied:'تم تطبيق كود الخصم',invalidCoupon:'كود خصم غير صحيح',couponExpired:'كود الخصم منتهي الصلاحية',couponMaxed:'كود الخصم وصل للحد الأقصى',couponInactive:'كود الخصم غير مفعل',minOrderNotMet:'الطلب أقل من الحد الأدنى',discountApplied:'الخصم المطبق',noCoupons:'لا توجد أكواد خصم',enterCoupon:'أدخل كود الخصم',removeCoupon:'إزالة الكود',
 },
 en:{home:'Home',shop:'Shop',categories:'Categories',about:'About',signin:'Sign In',register:'Register',signout:'Sign Out',admin:'Admin',
@@ -130,6 +131,7 @@ variantStock:'Variant Stock',stockPerVariant:'Stock per Color/Size',
 freeShipping:'Free Shipping',fastDelivery:'Fast Delivery',fastDeliveryDesc:'Delivery within 2-5 business days',
 loginRequired:'Please login first',
 manageCategories:'Manage Categories',
+filterByCategory:'Filter by Category',filterByStatus:'Filter by Status',filterByStock:'Filter by Stock',searchByName:'Search by name...',searchOrders:'Search by name or number...',allStatuses:'All Statuses',allStock:'All Products',lowStockOnly:'Low Stock',outOfStockOnly:'Out of Stock',inStockOnly:'In Stock Only',sortBy:'Sort By',sortNewest:'Newest',sortOldest:'Oldest',sortPriceHigh:'Price: High',sortPriceLow:'Price: Low',sortNameAZ:'Name: A-Z',priceRange:'Price Range',priceFrom:'From',priceTo:'To',applyFilter:'Apply',resetFilter:'Reset',designedBy:'Designed & Developed by',shareProduct:'Share Product',shareVia:'Share via',copyLink:'Copy Link',linkCopied:'Link Copied',
 coupons:'Coupons',manageCoupons:'Manage Coupons',addCoupon:'Add Coupon',editCoupon:'Edit Coupon',couponCode:'Coupon Code',couponDiscount:'Discount Value',couponType:'Discount Type',percentage:'Percentage',fixedAmount:'Fixed Amount',minOrder:'Min Order',maxUses:'Max Uses',usedCount:'Used Count',expiresAt:'Expires At',unlimited:'Unlimited',active:'Active',inactive:'Inactive',couponAdded:'Coupon added',couponUpdated:'Coupon updated',couponDeleted:'Coupon deleted',applyCoupon:'Apply',couponApplied:'Coupon applied',invalidCoupon:'Invalid coupon code',couponExpired:'Coupon expired',couponMaxed:'Coupon usage limit reached',couponInactive:'Coupon is inactive',minOrderNotMet:'Order below minimum',discountApplied:'Discount applied',noCoupons:'No coupons',enterCoupon:'Enter coupon code',removeCoupon:'Remove coupon',
 }};
 
@@ -303,7 +305,7 @@ function renderFooter(){
       <i class="fas fa-code"></i>
     </span>
   <span class="credit-text" style="font-size: 18px; font-weight: bold;">
-  تصميم و تطوير 
+  ${t('designedBy')} 
 </span>
 <a href="mailto:mahmoudnageeb2709@gmail.com" class="credit-name">
   MAHMOUD NAGEEB
@@ -375,22 +377,27 @@ async function loadCartData(){if(!Store.isLoggedIn())return;const _c=await API.g
 
 // ==================== SHOP ====================
 async function loadShopPage(){
-  const up=new URLSearchParams(location.search),cat=up.get('category')||'',srch=up.get('search')||'';
+  const up=new URLSearchParams(location.search),cat=up.get('category')||'',srch=up.get('search')||'',sort=up.get('sort')||'';
   if(!Store.categories.length){const _c=await API.get('/api/categories');Store.categories=Array.isArray(_c)?_c:[]}
   renderPage(`<section class="section"><div class="section-header"><h2 class="section-title">${t('allProducts')}</h2></div>
-    <div style="margin-bottom:1.2rem;display:flex;gap:.8rem;flex-wrap:wrap;align-items:center">
-      <div style="flex:1;min-width:180px;position:relative"><i class="fas fa-search" style="position:absolute;top:50%;transform:translateY(-50%);${Store.lang==='ar'?'right':'left'}:12px;color:var(--text-secondary)"></i>
-      <input type="text" class="form-input" id="shopSearch" placeholder="${t('searchProducts')}" value="${srch}" style="padding-${Store.lang==='ar'?'right':'left'}:2.4rem" onkeyup="if(event.key==='Enter')doShopFilter()"></div>
-      <select class="form-input" id="shopCat" onchange="doShopFilter()" style="max-width:200px"><option value="">${t('allCategories')}</option>
+    <div class="shop-filter-bar">
+      <div class="shop-search-wrap"><i class="fas fa-search"></i>
+      <input type="text" class="form-input" id="shopSearch" placeholder="${t('searchProducts')}" value="${srch}" onkeyup="if(event.key==='Enter')doShopFilter()"></div>
+      <select class="form-input shop-filter-select" id="shopCat" onchange="doShopFilter()"><option value="">${t('allCategories')}</option>
       ${Store.categories.map(c=>`<option value="${c.name_en}" ${cat===c.name_en?'selected':''}>${getCatName(c)}</option>`).join('')}</select>
+      <select class="form-input shop-filter-select" id="shopSort" onchange="doShopFilter()"><option value="">${t('sortBy')}</option><option value="newest" ${sort==='newest'?'selected':''}>${t('sortNewest')}</option><option value="oldest" ${sort==='oldest'?'selected':''}>${t('sortOldest')}</option><option value="price_high" ${sort==='price_high'?'selected':''}>${t('sortPriceHigh')}</option><option value="price_low" ${sort==='price_low'?'selected':''}>${t('sortPriceLow')}</option></select>
     </div><div class="products-grid" id="shopProducts">${skeletons(8)}</div></section>`);
   let url='/api/products?';if(cat)url+=`category=${encodeURIComponent(cat)}&`;if(srch)url+=`search=${encodeURIComponent(srch)}&`;
-  const _sp=await API.get(url);const products=Array.isArray(_sp)?_sp:[];Store.products=products;
+  const _sp=await API.get(url);let products=Array.isArray(_sp)?_sp:[];
+  if(sort==='price_high')products.sort((a,b)=>b.price-a.price);
+  else if(sort==='price_low')products.sort((a,b)=>a.price-b.price);
+  else if(sort==='oldest')products.sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
+  Store.products=products;
   const g=document.getElementById('shopProducts');
   if(g)g.innerHTML=products.length?products.map((p,i)=>productCard(p,i)).join(''):`<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-search"></i><h3>${t('noProducts')}</h3></div>`;
   initScrollAnimations()}
-function doShopFilter(){const s=document.getElementById('shopSearch')?.value||'',c=document.getElementById('shopCat')?.value||'';
-  let u='/shop?';if(s)u+=`search=${s}&`;if(c)u+=`category=${c}&`;Router.navigate(u)}
+function doShopFilter(){const s=document.getElementById('shopSearch')?.value||'',c=document.getElementById('shopCat')?.value||'',sort=document.getElementById('shopSort')?.value||'';
+  let u='/shop?';if(s)u+=`search=${s}&`;if(c)u+=`category=${c}&`;if(sort)u+=`sort=${sort}&`;Router.navigate(u)}
 
 // ==================== WISHLIST ====================
 async function loadWishlistPage(){
@@ -442,7 +449,8 @@ async function loadProductDetails(id){
       <div class="stock-info ${p.stock>0?'in-stock':'out-of-stock'}" id="stockDisplay"><i class="fas ${p.stock>0?'fa-check-circle':'fa-times-circle'}"></i><span id="stockText">${p.stock>0?`${t('inStock')} (${p.stock})`:t('outOfStock')}</span></div>
       <div class="detail-actions"><div class="quantity-control"><button class="quantity-btn" onclick="chgQty(-1)">-</button><input type="number" class="quantity-value" id="detQty" value="1" min="1" max="${p.stock||99}" readonly><button class="quantity-btn" onclick="chgQty(1)">+</button></div>
       <button class="btn-primary" onclick="addFromDetail('${p.id}',${hasSizes?1:0},${hasColors?1:0})" ${p.stock<=0?'disabled style="opacity:.5"':''}><i class="fas fa-cart-plus"></i> ${t('addToCart')}</button>
-      <button class="icon-btn wish-detail-btn ${Store.isWished(p.id)?'wished':''}" onclick="toggleWishProd('${p.id}',this)" title="${t('wishlist')}"><i class="fas fa-heart"></i></button></div>
+      <button class="icon-btn wish-detail-btn ${Store.isWished(p.id)?'wished':''}" onclick="toggleWishProd('${p.id}',this)" title="${t('wishlist')}"><i class="fas fa-heart"></i></button>
+      <button class="icon-btn share-detail-btn" onclick="shareProduct('${p.id}','${getTitle(p).replace(/'/g,"\\'")}','${p.product_img||''}')" title="${t('shareProduct')}"><i class="fas fa-share-alt"></i></button></div>
       ${Store.isAdmin()?`<div style="margin-top:1.5rem;display:flex;gap:.8rem;flex-wrap:wrap"><a href="/admin/edit-product/${p.id}" class="btn-secondary" style="text-decoration:none"><i class="fas fa-edit"></i> ${t('editProduct')}</a><button class="btn-danger" onclick="delProdDetail('${p.id}')"><i class="fas fa-trash"></i> ${t('deleteProduct')}</button></div>`:''}</div></div></div>`)}
 
 function updateStockDisplay(){
@@ -460,6 +468,32 @@ function updateStockDisplay(){
 
 function selectOption(btn,type){btn.closest('.size-color-selector').querySelectorAll('.sc-option').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected')}
 function switchMainImg(src,thumb){const main=document.getElementById('mainProductImg');if(main)main.src=src;document.querySelectorAll('.detail-thumb').forEach(t=>t.classList.remove('active'));if(thumb)thumb.classList.add('active')}
+
+// ==================== SHARE PRODUCT ====================
+function shareProduct(id,title,img){
+  const url=window.location.origin+'/product/'+id;
+  const text=title+' - '+t('heroTitle');
+  // Try native share first (mobile)
+  if(navigator.share){
+    navigator.share({title:title,text:text,url:url}).catch(()=>{});
+    return}
+  // Desktop: show share modal
+  const m=document.createElement('div');m.className='modal-overlay';m.id='shareModal';
+  m.onclick=e=>{if(e.target===m)m.remove()};
+  m.innerHTML=`<div class="share-modal">
+    <div class="share-modal-header"><h3><i class="fas fa-share-alt" style="color:var(--accent)"></i> ${t('shareVia')}</h3><button class="modal-close-btn" onclick="document.getElementById('shareModal').remove()"><i class="fas fa-times"></i></button></div>
+    <div class="share-buttons">
+      <a href="https://wa.me/?text=${encodeURIComponent(text+' '+url)}" target="_blank" class="share-btn share-whatsapp"><i class="fab fa-whatsapp"></i><span>WhatsApp</span></a>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" target="_blank" class="share-btn share-facebook"><i class="fab fa-facebook-f"></i><span>Facebook</span></a>
+      <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}" target="_blank" class="share-btn share-twitter"><i class="fab fa-x-twitter"></i><span>X</span></a>
+      <a href="https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}" target="_blank" class="share-btn share-telegram"><i class="fab fa-telegram-plane"></i><span>Telegram</span></a>
+      <button class="share-btn share-copy" onclick="copyProductLink('${url}')"><i class="fas fa-link"></i><span>${t('copyLink')}</span></button>
+    </div>
+  </div>`;
+  document.body.appendChild(m)}
+function copyProductLink(url){
+  navigator.clipboard.writeText(url).then(()=>{showToast(t('linkCopied'));document.getElementById('shareModal')?.remove()}).catch(()=>{
+    const i=document.createElement('input');i.value=url;document.body.appendChild(i);i.select();document.execCommand('copy');document.body.removeChild(i);showToast(t('linkCopied'));document.getElementById('shareModal')?.remove()})}
 
 // ==================== LIGHTBOX ====================
 let lightboxImages=[],lightboxIndex=0;
@@ -797,20 +831,40 @@ function showStockModal(type){
 // ==================== ADMIN PRODUCTS ====================
 async function loadAdminProductsPage(){
   if(!Store.isAdmin()){Router.navigate('/signin');return}
-  const _ap=await API.get('/api/products');const products=Array.isArray(_ap)?_ap:[];
+  if(!Store.categories.length){const _c=await API.get('/api/categories');Store.categories=Array.isArray(_c)?_c:[]}
+  const _ap=await API.get('/api/products');const allProducts=Array.isArray(_ap)?_ap:[];
+  window._adminProducts=allProducts;
   renderPage(`<div class="admin-page-inner">
-    <div class="admin-page-header"><h2><i class="fas fa-boxes-stacked"></i> ${t('manageProducts')}</h2>
+    <div class="admin-page-header"><h2><i class="fas fa-boxes-stacked"></i> ${t('manageProducts')} <span style="font-size:.85rem;color:var(--text-secondary);font-weight:400">(${allProducts.length})</span></h2>
     <a href="/admin/add-product" class="btn-primary btn-sm" style="text-decoration:none"><i class="fas fa-plus"></i> ${t('addProduct')}</a></div>
-    <div class="admin-list">${products.map(p=>{
-      const disc=p.old_price?Math.round((1-p.price/p.old_price)*100):0;
-      return`<div class="admin-row">
-      <img src="${p.product_img||'/static/images/1.png'}" onerror="this.src='/static/images/1.png'">
-      <div class="admin-row-info"><h4>${getTitle(p)}</h4><p>${p.category||''} ${p.brand?'· '+p.brand:''} · ${t('productStock')}: ${p.stock}${disc>0?` · <span style="color:var(--error)">-${disc}%</span>`:''}</p></div>
-      <span class="admin-row-price">${formatPrice(p.price)}</span>
-      <div class="admin-row-actions">
-        <a href="/admin/edit-product/${p.id}" class="icon-btn" style="width:32px;height:32px;font-size:.75rem;text-decoration:none" title="${t('editProduct')}"><i class="fas fa-edit"></i></a>
-        <button class="icon-btn" style="width:32px;height:32px;font-size:.75rem;background:rgba(239,68,68,.1);color:var(--error);border-color:rgba(239,68,68,.2)" onclick="delProdAdmin('${p.id}')" title="${t('deleteProduct')}"><i class="fas fa-trash"></i></button>
-      </div></div>`}).join('')}${!products.length?`<div class="empty-state"><i class="fas fa-box-open"></i><h3>${t('noProducts')}</h3></div>`:''}</div></div>`)}
+    <div class="admin-filter-bar">
+      <div class="admin-search-box"><i class="fas fa-search"></i><input type="text" id="adminProdSearch" class="form-input" placeholder="${t('searchByName')}" oninput="filterAdminProducts()"></div>
+      <select class="form-input admin-filter-select" id="adminProdCat" onchange="filterAdminProducts()"><option value="">${t('allCategories')}</option>${Store.categories.map(c=>`<option value="${c.name_en}">${getCatName(c)}</option>`).join('')}</select>
+      <select class="form-input admin-filter-select" id="adminProdStock" onchange="filterAdminProducts()"><option value="">${t('allStock')}</option><option value="in">${t('inStockOnly')}</option><option value="low">${t('lowStockOnly')}</option><option value="out">${t('outOfStockOnly')}</option></select>
+    </div>
+    <div class="admin-list" id="adminProductsList"></div></div>`);
+  filterAdminProducts()}
+function filterAdminProducts(){
+  const search=(document.getElementById('adminProdSearch')?.value||'').toLowerCase();
+  const cat=document.getElementById('adminProdCat')?.value||'';
+  const stock=document.getElementById('adminProdStock')?.value||'';
+  let filtered=(window._adminProducts||[]).filter(p=>{
+    if(search&&!((p.title_ar||'').toLowerCase().includes(search)||(p.title_en||'').toLowerCase().includes(search)||(p.sku||'').toLowerCase().includes(search)))return false;
+    if(cat&&p.category!==cat)return false;
+    if(stock==='out'&&p.stock>0)return false;
+    if(stock==='low'&&(p.stock<=0||p.stock>5))return false;
+    if(stock==='in'&&p.stock<=0)return false;
+    return true});
+  const el=document.getElementById('adminProductsList');if(!el)return;
+  el.innerHTML=filtered.length?filtered.map(p=>{const disc=p.old_price?Math.round((1-p.price/p.old_price)*100):0;
+    return`<div class="admin-row">
+    <img src="${p.product_img||'/static/images/1.png'}" onerror="this.src='/static/images/1.png'">
+    <div class="admin-row-info"><h4>${getTitle(p)}</h4><p>${p.category||''} ${p.brand?'· '+p.brand:''} · ${t('productStock')}: <span style="color:${p.stock<=0?'var(--error)':p.stock<=5?'#f59e0b':'var(--success)'};font-weight:600">${p.stock}</span>${disc>0?` · <span style="color:var(--error)">-${disc}%</span>`:''}</p></div>
+    <span class="admin-row-price">${formatPrice(p.price)}</span>
+    <div class="admin-row-actions">
+      <a href="/admin/edit-product/${p.id}" class="icon-btn" style="width:32px;height:32px;font-size:.75rem;text-decoration:none" title="${t('editProduct')}"><i class="fas fa-edit"></i></a>
+      <button class="icon-btn" style="width:32px;height:32px;font-size:.75rem;background:rgba(239,68,68,.1);color:var(--error);border-color:rgba(239,68,68,.2)" onclick="delProdAdmin('${p.id}')" title="${t('deleteProduct')}"><i class="fas fa-trash"></i></button>
+    </div></div>`}).join(''):`<div class="empty-state"><i class="fas fa-box-open"></i><h3>${t('noProducts')}</h3></div>`}
 async function delProdAdmin(id){if(!confirm(t('confirmDelete')))return;const{ok}=await API.del(`/api/products/${id}`);if(ok){showToast(t('productDeleted'));loadAdminProductsPage()}}
 
 // ==================== ADMIN ADD/EDIT PRODUCT ====================
@@ -976,18 +1030,33 @@ async function doUpdateProduct(e,id){e.preventDefault();document.getElementById(
 // ==================== ADMIN ORDERS ====================
 async function loadAdminOrdersPage(){
   if(!Store.isAdmin()){Router.navigate('/signin');return}
-  const _ao=await API.get('/api/orders');const orders=Array.isArray(_ao)?_ao:[];
+  const _ao=await API.get('/api/orders');const allOrders=Array.isArray(_ao)?_ao:[];
+  window._adminOrders=allOrders;
   renderPage(`<div class="admin-page-inner">
-    <div class="admin-page-header"><h2><i class="fas fa-clipboard-list"></i> ${t('manageOrders')}</h2></div>
-    <div class="admin-list">${orders.map(o=>`<div class="admin-row" style="cursor:pointer" onclick="Router.navigate('/admin/orders/${o.id}')">
-      <div style="width:44px;height:44px;border-radius:10px;background:rgba(201,168,76,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-receipt" style="color:var(--accent)"></i></div>
-      <div class="admin-row-info"><h4>#${o.id} - ${o.full_name||o.user_name||'—'}</h4><p>${o.phone||''} · ${o.governorate||''}, ${o.city||''}</p></div>
-      <span class="admin-row-price">${formatPrice(o.total)}</span>
-      <span class="status-badge status-${o.status||'pending'}">${t(o.status||'pending')}</span>
-      <div class="admin-row-actions" onclick="event.stopPropagation()">
-        <button class="icon-btn" style="width:32px;height:32px;font-size:.75rem" onclick="generateInvoicePDF('${o.id}')" title="${t('downloadInvoice')}"><i class="fas fa-file-pdf"></i></button>
-        <button class="icon-btn" style="width:32px;height:32px;font-size:.75rem;background:rgba(239,68,68,.1);color:var(--error);border-color:rgba(239,68,68,.2)" onclick="delOrder('${o.id}')" title="${t('deleteOrder')}"><i class="fas fa-trash"></i></button>
-      </div></div>`).join('')}${!orders.length?`<div class="empty-state"><i class="fas fa-clipboard-list"></i><h3>${t('noOrders')}</h3></div>`:''}</div></div>`)}
+    <div class="admin-page-header"><h2><i class="fas fa-clipboard-list"></i> ${t('manageOrders')} <span style="font-size:.85rem;color:var(--text-secondary);font-weight:400">(${allOrders.length})</span></h2></div>
+    <div class="admin-filter-bar">
+      <div class="admin-search-box"><i class="fas fa-search"></i><input type="text" id="adminOrderSearch" class="form-input" placeholder="${t('searchOrders')}" oninput="filterAdminOrders()"></div>
+      <select class="form-input admin-filter-select" id="adminOrderStatus" onchange="filterAdminOrders()"><option value="">${t('allStatuses')}</option><option value="pending">${t('pending')}</option><option value="processing">${t('processing')}</option><option value="shipped">${t('shipped')}</option><option value="completed">${t('completed')}</option><option value="cancelled">${t('cancelled')}</option></select>
+    </div>
+    <div class="admin-list" id="adminOrdersList"></div></div>`);
+  filterAdminOrders()}
+function filterAdminOrders(){
+  const search=(document.getElementById('adminOrderSearch')?.value||'').toLowerCase();
+  const status=document.getElementById('adminOrderStatus')?.value||'';
+  let filtered=(window._adminOrders||[]).filter(o=>{
+    if(search&&!((o.full_name||'').toLowerCase().includes(search)||(o.user_name||'').toLowerCase().includes(search)||(o.phone||'').includes(search)||o.id.toLowerCase().includes(search)))return false;
+    if(status&&o.status!==status)return false;
+    return true});
+  const el=document.getElementById('adminOrdersList');if(!el)return;
+  el.innerHTML=filtered.length?filtered.map(o=>`<div class="admin-row" style="cursor:pointer" onclick="Router.navigate('/admin/orders/${o.id}')">
+    <div style="width:44px;height:44px;border-radius:10px;background:rgba(201,168,76,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-receipt" style="color:var(--accent)"></i></div>
+    <div class="admin-row-info"><h4>#${o.id.slice(-6)} - ${o.full_name||o.user_name||'—'}</h4><p>${o.phone||''} · ${o.governorate||''}, ${o.city||''}</p></div>
+    <span class="admin-row-price">${formatPrice(o.total)}</span>
+    <span class="status-badge status-${o.status||'pending'}">${t(o.status||'pending')}</span>
+    <div class="admin-row-actions" onclick="event.stopPropagation()">
+      <button class="icon-btn" style="width:32px;height:32px;font-size:.75rem" onclick="generateInvoicePDF('${o.id}')" title="${t('downloadInvoice')}"><i class="fas fa-file-pdf"></i></button>
+      <button class="icon-btn" style="width:32px;height:32px;font-size:.75rem;background:rgba(239,68,68,.1);color:var(--error);border-color:rgba(239,68,68,.2)" onclick="delOrder('${o.id}')" title="${t('deleteOrder')}"><i class="fas fa-trash"></i></button>
+    </div></div>`).join(''):`<div class="empty-state"><i class="fas fa-clipboard-list"></i><h3>${t('noOrders')}</h3></div>`}
 async function delOrder(id){if(!confirm(t('confirmDelete')))return;const{ok}=await API.del(`/api/orders/${id}`);if(ok){showToast(t('orderDeleted'));if(Router.current.startsWith('/admin/orders'))loadAdminOrdersPage();else loadAdminPage()}}
 
 // ==================== ADMIN ORDER DETAIL ====================
